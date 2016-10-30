@@ -19,13 +19,16 @@ public class InventoryProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,InventoryContract.PATH_INVENTORY,INVENTORY);
-        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,InventoryContract.PATH_INVENTORY,INVENTORY_ID);
+        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,InventoryContract.PATH_INVENTORY+"/#",INVENTORY_ID);
     }
     private InventoryDbHelper mDbHelper;
     @Override
     public boolean onCreate() {
-        return false;
+        mDbHelper = new InventoryDbHelper(getContext());
+        return true;
     }
+
+
 
     @Nullable
     @Override
@@ -59,6 +62,7 @@ public class InventoryProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Log.i("uri", String.valueOf(uri));
         int match = sUriMatcher.match(uri);
         switch (match){
             case INVENTORY : return insertInventory(uri,values);
