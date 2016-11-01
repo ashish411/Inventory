@@ -60,5 +60,12 @@
             android:layout_gravity="center_horizontal"
             android:textSize="20sp" />
     </LinearLayout>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sell"
+        android:focusable="false"
+        android:layout_gravity="center"
+        android:focusableInTouchMode="false"
+        android:id="@+id/buttonSales"/>
 </LinearLayout>

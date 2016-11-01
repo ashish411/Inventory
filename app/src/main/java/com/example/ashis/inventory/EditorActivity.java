@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,9 +36,12 @@ public class EditorActivity extends AppCompatActivity {
     private Uri currentInvUri;
     private ImageView prodImage;
     private Bitmap bp;
+    private Button buttonOrder;
     private byte[] imageByte;
+    private String name,supp,qty;
     private static final int IMAGE_REQUEST_CODE = 1;
     private boolean itemDataChange = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class EditorActivity extends AppCompatActivity {
         prodQty = (EditText) findViewById(R.id.inputProditems);
         prodPrice = (EditText) findViewById(R.id.inputProdPrice);
         prodImage = (ImageView) findViewById(R.id.prodImage);
+        buttonOrder=(Button) findViewById(R.id.buttonOrder);
         //setting on touch listener for discarding of app
         prodName.setOnTouchListener(mTouchListener);
         prodSupp.setOnTouchListener(mTouchListener);
@@ -81,6 +86,7 @@ public class EditorActivity extends AppCompatActivity {
                 } else {
                     prodImage.setImageResource(R.drawable.ic_add_circle_outline_white_24dp);
                 }
+
             }
         }
         prodImage.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +96,24 @@ public class EditorActivity extends AppCompatActivity {
                 startActivityForResult(intent, IMAGE_REQUEST_CODE);
             }
         });
-
+        buttonOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("*/*");
+                intent.putExtra(Intent.EXTRA_EMAIL,"customercare@amazon.in");
+                intent.putExtra(Intent.EXTRA_SUBJECT,"request for the order placement ");
+                Log.i("ashish",prodName.getText().toString());
+                Log.i("ashish",prodSupp.getText().toString());
+                intent.putExtra(Intent.EXTRA_TEXT,"Order Update: /n " +
+                        "Name : "+prodName.getText().toString() +
+                        "\n Supplier : "+prodSupp.getText().toString()+
+                        "\n price :"+prodPrice.getText().toString());
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -120,9 +143,15 @@ public class EditorActivity extends AppCompatActivity {
                 break;
             case R.id.delete:
                 if (currentInvUri != null) {
-                    getContentResolver().delete(currentInvUri, null, null);
-                    Toast.makeText(getApplicationContext(), "product deleted", Toast.LENGTH_SHORT).show();
-                    finish();
+                    DialogInterface.OnClickListener deletButton = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                        }
+                    };
+                    showDeleteDialog(deletButton);
+                   // getContentResolver().delete(currentInvUri, null, null);
+
                 } else
                     Toast.makeText(getApplicationContext(), "delete operstion not supported while insertion of item", Toast.LENGTH_SHORT).show();
                 break;
@@ -141,7 +170,7 @@ public class EditorActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 // User clicked "Discard" button, navigate to parent activity.
-                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+
                             }
                         };
                 showUnsavedChangesDialog(discardButtonClickListener);
@@ -157,7 +186,8 @@ public class EditorActivity extends AppCompatActivity {
         String supp = prodSupp.getText().toString();
         String qty = prodQty.getText().toString();
         String price = prodPrice.getText().toString();
-        if (currentInvUri==null && TextUtils.isEmpty(name) && TextUtils.isEmpty(supp) && TextUtils.isEmpty(qty) && TextUtils.isEmpty(price)){
+        if (currentInvUri==null &&( TextUtils.isEmpty(name) || TextUtils.isEmpty(supp) || TextUtils.isEmpty(qty) || TextUtils.isEmpty(price))){
+            Toast.makeText(getApplicationContext(),"some of the fields are empty",Toast.LENGTH_SHORT).show();
             return;
         }
         int qtyInt =0;
@@ -187,6 +217,29 @@ public class EditorActivity extends AppCompatActivity {
         builder.setMessage("Discard your changes and quit editing?");
         builder.setPositiveButton("Discard", discardButtonClickListner);
         builder.setNegativeButton("Keep Editing", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null)
+                    dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+    private void showDeleteDialog(DialogInterface.OnClickListener discardButtonClickListner) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you really want to delete");
+        builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getContentResolver().delete(currentInvUri,null,null);
+                Toast.makeText(getApplicationContext(), "product deleted", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null)
