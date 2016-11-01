@@ -45,6 +45,8 @@ public class InventoryProvider extends ContentProvider {
                                 break;
             default: throw new IllegalArgumentException("Cannot query Unknown Uri "+uri);
         }
+
+        cursor.setNotificationUri(getContext().getContentResolver(),uri);
         return cursor;
     }
 
@@ -74,8 +76,22 @@ public class InventoryProvider extends ContentProvider {
 
     private Uri insertInventory(Uri uri, ContentValues values) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String name = values.getAsString(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME);
+        if (name==null)
+            throw new IllegalArgumentException("product requires a name");
+        String supp = values.getAsString(InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER);
+        if (supp==null)
+            throw new IllegalArgumentException("product requires a supplier name");
+        Integer qty = values.getAsInteger(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY);
+        if (qty!= null && qty<0)
+            throw new IllegalArgumentException("product requires a valid qty");
+        Integer price = values.getAsInteger(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE);
+        if (price!= null && price<0)
+            throw new IllegalArgumentException("product requires a valid price");
+
         long id = db.insert(InventoryContract.InventoryEntry.TABLE_NAME,null,values);
         if (id == -1) {return null;}
+        getContext().getContentResolver().notifyChange(uri,null);
         return ContentUris.withAppendedId(uri,id);
     }
 
@@ -84,18 +100,38 @@ public class InventoryProvider extends ContentProvider {
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
+        int rowsDel;
         switch (match){
-            case INVENTORY: return db.delete(InventoryContract.InventoryEntry.TABLE_NAME,selection,selectionArgs);
+            case INVENTORY: rowsDel= db.delete(InventoryContract.InventoryEntry.TABLE_NAME,selection,selectionArgs);
+                            break;
             case INVENTORY_ID : selection = InventoryContract.InventoryEntry._ID + "=?";
                                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                                return db.delete(InventoryContract.InventoryEntry.TABLE_NAME,selection,selectionArgs);
+                                rowsDel= db.delete(InventoryContract.InventoryEntry.TABLE_NAME,selection,selectionArgs);
+                                break;
+
             default: throw new IllegalArgumentException("Delete operation not valid for this uri "+uri);
         }
+        if (rowsDel!=0)
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        return rowsDel;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
        int match = sUriMatcher.match(uri);
+        String name = values.getAsString(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME);
+        if (name==null)
+            throw new IllegalArgumentException("product requires a name");
+        String supp = values.getAsString(InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER);
+        if (supp==null)
+            throw new IllegalArgumentException("product requires a supplier name");
+        Integer qty = values.getAsInteger(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY);
+        if (qty!= null && qty<0)
+            throw new IllegalArgumentException("product requires a valid qty");
+        Integer price = values.getAsInteger(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE);
+        if (price!= null && price<0)
+            throw new IllegalArgumentException("product requires a valid price");
         switch (match){
             case INVENTORY: return updateInventory(uri,values,selection,selectionArgs);
             case INVENTORY_ID: selection = InventoryContract.InventoryEntry._ID + "=?";
@@ -107,6 +143,7 @@ public class InventoryProvider extends ContentProvider {
 
     private int updateInventory(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        getContext().getContentResolver().notifyChange(uri, null);
         return db.update(InventoryContract.InventoryEntry.TABLE_NAME,values,selection,selectionArgs);
 
     }

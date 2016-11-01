@@ -1,15 +1,23 @@
 package com.example.ashis.inventory;
 
+import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,9 +25,9 @@ import android.widget.TextView;
 import com.example.ashis.inventory.data.InventoryContract;
 import com.example.ashis.inventory.data.InventoryDbHelper;
 
-public class MainActivity extends AppCompatActivity {
-    private TextView textView;
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private TextView emptyText;
     private Cursor cursor;
     private ListView listView;
     private InventoryAdapter mAdapter;
@@ -27,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        displayDbData();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,27 +43,55 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-
-
-    private void displayDbData() {
-       InventoryDbHelper mDbHelper = new InventoryDbHelper(this);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        String[] projection = {InventoryContract.InventoryEntry._ID,InventoryContract.InventoryEntry.COLLUMN_PROD_NAME, InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER};
-        cursor = db.query(InventoryContract.InventoryEntry.TABLE_NAME,projection,null,null,null,null,null);
+        emptyText=(TextView) findViewById(R.id.emptyView);
         listView = (ListView) findViewById(R.id.list);
         mAdapter = new InventoryAdapter(this,cursor);
         listView.setAdapter(mAdapter);
-
+        getLoaderManager().initLoader(0,null,this);
+        listView.setEmptyView(emptyText);
+       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Intent intent = new Intent(getApplicationContext(),EditorActivity.class);
+               Uri currentInventoryUri = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI,id);
+               intent.setData(currentInventoryUri);
+               startActivity(intent);
+           }
+       });
     }
-    private void insert(){
-        ContentValues values = new ContentValues();
-        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME,"iphone");
-        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER,"Apple");
-        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY,100);
-        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE,57000);
-        Uri newUri = getContentResolver().insert(InventoryContract.InventoryEntry.CONTENT_URI,values);
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.list_item_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.deleteTable:
+                int rowsDeleted = getContentResolver().delete(InventoryContract.InventoryEntry.CONTENT_URI,null,null);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {InventoryContract.InventoryEntry._ID,
+                InventoryContract.InventoryEntry.COLLUMN_PROD_NAME,
+                InventoryContract.InventoryEntry.COLLUMN_PROD_QTY,
+                InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE};
+        return new CursorLoader(this, InventoryContract.InventoryEntry.CONTENT_URI,projection,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+            mAdapter.swapCursor(null);
     }
 }

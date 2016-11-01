@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@android:color/holo_orange_light"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -12,14 +14,51 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold" />
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="horizontal">
+   <TextView
+      style="@style/MainActivityHeading"
+       android:textAppearance="?android:attr/textAppearanceMedium"
+       android:text="In Stock"
+       android:textSize="20sp"
+       android:textColor="@android:color/holo_red_light"
+       android:textAlignment="center"/>
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/prod_supp"
+        android:textAlignment="center"
+        android:id="@+id/prod_qty"
         android:layout_gravity="center_horizontal"
         android:textSize="20sp" />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/MainActivityHeading"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_red_light"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="र"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/prod_price"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20sp" />
+    </LinearLayout>
 
 </LinearLayout>

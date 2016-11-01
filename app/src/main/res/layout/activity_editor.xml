@@ -1,73 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            style="@style/MainActivityHeading"
-            android:text="OverView"/>
-        <LinearLayout
-            android:layout_width="0dp"
+    android:background="@android:color/holo_orange_light"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_add_circle_outline_white_24dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/prodImage"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="2"
             android:orientation="vertical">
 
-            <EditText
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/inputProdName"
-                style="@style/MainActivityValues"
-                android:hint="Name"
-                android:inputType="textCapWords" />
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-            <EditText
+                <TextView
+                    style="@style/MainActivityHeading"
+                    android:text="OverView"
+                    android:textAlignment="center"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/holo_red_light"
+                    android:layout_height="match_parent"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/inputProdName"
+                        style="@style/MainActivityValues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:maxLines="1"
+                        android:hint="Name"
+                        android:inputType="textCapWords" />
+
+                    <EditText
+                        android:id="@+id/inputProdSupp"
+                        style="@style/MainActivityValues"
+                        android:layout_width="match_parent"
+                        android:maxLines="1"
+                        android:inputType="textCapWords"
+                        android:textSize="24sp"
+                        android:layout_height="wrap_content"
+                        android:hint="Supplier" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/inputProdSupp"
-                android:hint="Supplier"
-                style="@style/MainActivityValues" />
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/MainActivityHeading"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/holo_red_light"
+                    android:text="No of Items in stock:" />
+
+                <EditText
+                    android:id="@+id/inputProditems"
+                    style="@style/MainActivityValues"
+                    android:textSize="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Items"
+                    android:layout_weight="2"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+               android:layout_marginTop="16dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/MainActivityHeading"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/holo_red_light"
+                    android:text="Price" />
+
+                <EditText
+                    android:textSize="24sp"
+                    android:id="@+id/inputProdPrice"
+                    style="@style/MainActivityValues"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="र"
+                    android:inputType="number" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            style="@style/MainActivityHeading"
-            android:text="No of Items in stock:"/>
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            style="@style/MainActivityValues"
-            android:id="@+id/inputProditems"
-            android:hint="Items"/>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            style="@style/MainActivityHeading"
-            android:text="Price"/>
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            style="@style/MainActivityValues"
-            android:id="@+id/inputProdPrice"
-            android:hint="Price"/>
-
-    </LinearLayout>
-
-</LinearLayout>

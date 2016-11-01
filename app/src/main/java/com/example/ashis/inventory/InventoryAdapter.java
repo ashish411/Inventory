@@ -26,10 +26,11 @@ public class InventoryAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView prod_name = (TextView) view.findViewById(R.id.prod_name);
-        TextView prod_supp = (TextView) view.findViewById(R.id.prod_supp);
+        TextView prod_qty = (TextView) view.findViewById(R.id.prod_qty);
+        TextView prod_price = (TextView) view.findViewById(R.id.prod_price);
 
         prod_name.setText(cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME)));
-        prod_supp.setText(cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER)));
-
+        prod_qty.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY))));
+        prod_price.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE))));
     }
 }
