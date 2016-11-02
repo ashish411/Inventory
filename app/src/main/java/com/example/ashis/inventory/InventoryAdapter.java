@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ashis.inventory.data.InventoryContract;
 import com.example.ashis.inventory.data.InventoryProvider;
@@ -25,36 +28,63 @@ public class InventoryAdapter extends CursorAdapter {
     public InventoryAdapter(Context context, Cursor c) {
         super(context, c);
     }
-    public TextView prod_name,prod_qty,prod_price;
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.inventory_list_item,parent,false);
+       View view = LayoutInflater.from(context).inflate(R.layout.inventory_list_item,parent,false);
+       ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
+        return view;
     }
 
 
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
-         prod_name = (TextView) view.findViewById(R.id.prod_name);
-         prod_qty = (TextView) view.findViewById(R.id.prod_qty);
-         prod_price = (TextView) view.findViewById(R.id.prod_price);
-        final Button buttonSell = (Button) view.findViewById(R.id.buttonSales);
-        prod_name.setText(cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME)));
-        prod_qty.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY))));
-        prod_price.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE))));
-        qtyRem = Integer.parseInt(prod_qty.getText().toString());
-        buttonSell.setTag(cursor.getPosition());
-            buttonSell.setOnClickListener(new View.OnClickListener() {
+        int qtyrem;
+        final ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final String name = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME));
+        final String qty = String.valueOf(cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY)));
+        String price = String.valueOf(cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE)));
+        final int id = cursor.getInt(cursor.getColumnIndex(InventoryContract.InventoryEntry._ID));
+        Log.i("idAdapter",String.valueOf(id));
+        viewHolder.prodName.setText(name);
+        viewHolder.prodQty.setText(qty);
+        viewHolder.prodPrice.setText(price);
+        viewHolder.buttonSell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = (Integer) v.getTag();
-                Log.i("num",String.valueOf(position));
-                qtyRem--;
-                prod_qty.setText(String.valueOf(qtyRem));
-
-                 }
+        ContentValues values = new ContentValues();
+        Uri uri = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI,id);
+                Log.i("uriAdapter",String.valueOf(uri));
+                    int qtyrem = Integer.parseInt(viewHolder.prodQty.getText().toString());
+                    qtyrem--;
+                    if (qtyrem<1){
+                        viewHolder.buttonSell.setVisibility(View.GONE);
+                        viewHolder.prodQty.setText("Out of stock");
+                        Toast.makeText(context,"Sorry product is out of stock",Toast.LENGTH_SHORT).show();
+                    }else {
+                        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME,viewHolder.prodName.getText().toString());
+                        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY,qtyrem);
+                        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE,Integer.parseInt(viewHolder.prodPrice.getText().toString()));
+                        context.getContentResolver().update(uri,values,null,null);
+                        viewHolder.prodQty.setText(String.valueOf(qtyrem));
+                    }
+            }
         });
-
     }
 
+    public static class ViewHolder{
+        public final TextView prodName;
+        public final TextView prodQty;
+        public final TextView prodPrice;
+        public final Button buttonSell;
 
+
+        public ViewHolder(View view) {
+            prodName = (TextView) view.findViewById(R.id.prod_name);
+            prodQty = (TextView) view.findViewById(R.id.prod_qty);
+            prodPrice = (TextView) view.findViewById(R.id.prod_price);
+            buttonSell = (Button) view.findViewById(R.id.buttonSales);
+
+        }
+    }
 }
