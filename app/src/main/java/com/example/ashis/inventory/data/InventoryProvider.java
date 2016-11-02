@@ -118,7 +118,7 @@ public class InventoryProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public  int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
        int match = sUriMatcher.match(uri);
         String name = values.getAsString(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME);
         if (name==null)

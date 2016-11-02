@@ -33,7 +33,7 @@ import com.example.ashis.inventory.data.InventoryContract;
  */
 public class EditorActivity extends AppCompatActivity {
     private EditText prodName, prodSupp, prodQty, prodPrice;
-    private Uri currentInvUri;
+    private  Uri currentInvUri;
     private ImageView prodImage;
     private Bitmap bp;
     private Button buttonOrder;
@@ -47,6 +47,7 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
         prodName = (EditText) findViewById(R.id.inputProdName);
         prodSupp = (EditText) findViewById(R.id.inputProdSupp);
         prodQty = (EditText) findViewById(R.id.inputProditems);
@@ -86,7 +87,6 @@ public class EditorActivity extends AppCompatActivity {
                 } else {
                     prodImage.setImageResource(R.drawable.ic_add_circle_outline_white_24dp);
                 }
-
             }
         }
         prodImage.setOnClickListener(new View.OnClickListener() {
@@ -161,10 +161,6 @@ public class EditorActivity extends AppCompatActivity {
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
                     return true;
                 }
-
-                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
-                // Create a click listener to handle the user confirming that
-                // changes should be discarded.
                 DialogInterface.OnClickListener discardButtonClickListener =
                         new DialogInterface.OnClickListener() {
                             @Override

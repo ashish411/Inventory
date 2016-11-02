@@ -7,27 +7,28 @@
     tools:context="com.example.ashis.inventory.MainActivity">
 
     <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list"/>
+        android:layout_height="match_parent" />
+
     <TextView
+        android:id="@+id/emptyView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textSize="20sp"
+        android:text="No product in stock \n Click on the bottom right button to add a product"
         android:textAlignment="center"
         android:textColor="@android:color/holo_red_light"
-        android:id="@+id/emptyView"
-        android:text="No product in stock \n Click on the bottom right button to add a product"/>
+        android:textSize="20sp" />
 
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_circle_outline_white_24dp"
-        android:id="@+id/fab"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:src="@drawable/ic_add_circle_outline_white_24dp" />
 
 </RelativeLayout>

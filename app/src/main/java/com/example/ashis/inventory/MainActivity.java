@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Cursor cursor;
     private ListView listView;
     private InventoryAdapter mAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,36 +45,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),EditorActivity.class);
+                Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
                 startActivity(intent);
             }
         });
-        emptyText=(TextView) findViewById(R.id.emptyView);
+        emptyText = (TextView) findViewById(R.id.emptyView);
         listView = (ListView) findViewById(R.id.list);
-        mAdapter = new InventoryAdapter(this,cursor);
+        mAdapter = new InventoryAdapter(this, cursor);
         listView.setAdapter(mAdapter);
-        getLoaderManager().initLoader(0,null,this);
+        getLoaderManager().initLoader(0, null, this);
         listView.setEmptyView(emptyText);
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Intent intent = new Intent(getApplicationContext(),EditorActivity.class);
-               Uri currentInventoryUri = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI,id);
-               intent.setData(currentInventoryUri);
-               startActivity(intent);
-           }
-       });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
+                Uri currentInventoryUri = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, id);
+                intent.setData(currentInventoryUri);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.list_item_menu,menu);
+        getMenuInflater().inflate(R.menu.list_item_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.deleteTable:
                 DialogInterface.OnClickListener deletButton = new DialogInterface.OnClickListener() {
                     @Override
@@ -86,13 +88,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void showDeleteDialog(DialogInterface.OnClickListener discardButtonClickListner) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you really want to delete");
         builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getContentResolver().delete(InventoryContract.InventoryEntry.CONTENT_URI,null,null);
+                getContentResolver().delete(InventoryContract.InventoryEntry.CONTENT_URI, null, null);
                 Toast.makeText(getApplicationContext(), "Table deleted", Toast.LENGTH_SHORT).show();
 
             }
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 InventoryContract.InventoryEntry.COLLUMN_PROD_NAME,
                 InventoryContract.InventoryEntry.COLLUMN_PROD_QTY,
                 InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE};
-        return new CursorLoader(this, InventoryContract.InventoryEntry.CONTENT_URI,projection,null,null,null);
+        return new CursorLoader(this, InventoryContract.InventoryEntry.CONTENT_URI, projection, null, null, null);
     }
 
     @Override
@@ -125,6 +128,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-            mAdapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 }
