@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String[] projection = {InventoryContract.InventoryEntry._ID,
                 InventoryContract.InventoryEntry.COLLUMN_PROD_NAME,
                 InventoryContract.InventoryEntry.COLLUMN_PROD_QTY,
-                InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE};
+                InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE,
+                InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER};
         return new CursorLoader(this, InventoryContract.InventoryEntry.CONTENT_URI, projection, null, null, null);
     }
 

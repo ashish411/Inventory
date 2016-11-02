@@ -33,12 +33,12 @@ import com.example.ashis.inventory.data.InventoryContract;
  */
 public class EditorActivity extends AppCompatActivity {
     private EditText prodName, prodSupp, prodQty, prodPrice;
-    private  Uri currentInvUri;
+    private Uri currentInvUri;
     private ImageView prodImage;
     private Bitmap bp;
     private Button buttonOrder;
     private byte[] imageByte;
-    private String name,supp,qty;
+    private String name, supp, qty;
     private static final int IMAGE_REQUEST_CODE = 1;
     private boolean itemDataChange = false;
 
@@ -49,16 +49,26 @@ public class EditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_editor);
 
         prodName = (EditText) findViewById(R.id.inputProdName);
+
         prodSupp = (EditText) findViewById(R.id.inputProdSupp);
+
         prodQty = (EditText) findViewById(R.id.inputProditems);
+
         prodPrice = (EditText) findViewById(R.id.inputProdPrice);
+
         prodImage = (ImageView) findViewById(R.id.prodImage);
-        buttonOrder=(Button) findViewById(R.id.buttonOrder);
+
+        buttonOrder = (Button) findViewById(R.id.buttonOrder);
         //setting on touch listener for discarding of app
+
         prodName.setOnTouchListener(mTouchListener);
+
         prodSupp.setOnTouchListener(mTouchListener);
+
         prodQty.setOnTouchListener(mTouchListener);
+
         prodPrice.setOnTouchListener(mTouchListener);
+
         prodImage.setOnTouchListener(mTouchListener);
         Intent intent = getIntent();
         currentInvUri = intent.getData();
@@ -101,14 +111,14 @@ public class EditorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("*/*");
-                intent.putExtra(Intent.EXTRA_EMAIL,"customercare@amazon.in");
-                intent.putExtra(Intent.EXTRA_SUBJECT,"request for the order placement ");
-                Log.i("ashish",prodName.getText().toString());
-                Log.i("ashish",prodSupp.getText().toString());
-                intent.putExtra(Intent.EXTRA_TEXT,"Order Update: /n " +
-                        "Name : "+prodName.getText().toString() +
-                        "\n Supplier : "+prodSupp.getText().toString()+
-                        "\n price :"+prodPrice.getText().toString());
+                intent.putExtra(Intent.EXTRA_EMAIL, "customercare@amazon.in");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "request for the order placement ");
+                Log.i("ashish", prodName.getText().toString());
+                Log.i("ashish", prodSupp.getText().toString());
+                intent.putExtra(Intent.EXTRA_TEXT, "Order Update: /n " +
+                        "Name : " + prodName.getText().toString() +
+                        "\n Supplier : " + prodSupp.getText().toString() +
+                        "\n price :" + prodPrice.getText().toString());
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 }
@@ -150,7 +160,7 @@ public class EditorActivity extends AppCompatActivity {
                         }
                     };
                     showDeleteDialog(deletButton);
-                   // getContentResolver().delete(currentInvUri, null, null);
+                    // getContentResolver().delete(currentInvUri, null, null);
 
                 } else
                     Toast.makeText(getApplicationContext(), "delete operstion not supported while insertion of item", Toast.LENGTH_SHORT).show();
@@ -182,21 +192,21 @@ public class EditorActivity extends AppCompatActivity {
         String supp = prodSupp.getText().toString();
         String qty = prodQty.getText().toString();
         String price = prodPrice.getText().toString();
-        if (currentInvUri==null &&( TextUtils.isEmpty(name) || TextUtils.isEmpty(supp) || TextUtils.isEmpty(qty) || TextUtils.isEmpty(price))){
-            Toast.makeText(getApplicationContext(),"some of the fields are empty",Toast.LENGTH_SHORT).show();
+        if (currentInvUri == null && (TextUtils.isEmpty(name) || TextUtils.isEmpty(supp) || TextUtils.isEmpty(qty) || TextUtils.isEmpty(price))) {
+            Toast.makeText(getApplicationContext(), "some of the fields are empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        int qtyInt =0;
+        int qtyInt = 0;
         if (!TextUtils.isEmpty(qty))
-            qtyInt=Integer.parseInt(qty);
-        int priceInt =0;
+            qtyInt = Integer.parseInt(qty);
+        int priceInt = 0;
         if (!TextUtils.isEmpty(price))
-            priceInt=Integer.parseInt(price);
+            priceInt = Integer.parseInt(price);
         ContentValues values = new ContentValues();
         values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_NAME, name);
         values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_SUPPLIER, supp);
         values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_QTY, qtyInt);
-        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE,priceInt);
+        values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_PRICE, priceInt);
         values.put(InventoryContract.InventoryEntry.COLLUMN_PROD_PICTURE, imageByte);
         if (currentInvUri == null) {
             Uri newUri = getContentResolver().insert(InventoryContract.InventoryEntry.CONTENT_URI, values);
@@ -230,7 +240,7 @@ public class EditorActivity extends AppCompatActivity {
         builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getContentResolver().delete(currentInvUri,null,null);
+                getContentResolver().delete(currentInvUri, null, null);
                 Toast.makeText(getApplicationContext(), "product deleted", Toast.LENGTH_SHORT).show();
                 finish();
             }
